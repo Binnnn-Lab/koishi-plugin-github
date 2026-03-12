@@ -1,0 +1,27 @@
+import { Schema } from 'koishi'
+import { BindingConfig, RelayEventName, relayEvents } from './types'
+
+export interface Config {
+  defaultPlatform: string
+  defaultBotId?: string
+  commandAuthority: number
+  maxPushCommits: number
+  bindings: BindingConfig[]
+}
+
+const eventSchema = Schema.union(relayEvents.map(event => Schema.const(event))) as Schema<RelayEventName>
+
+export const Config: Schema<Config> = Schema.object({
+  defaultPlatform: Schema.string().default('onebot').description('默认转发目标平台。NapCat 常见为 onebot。'),
+  defaultBotId: Schema.string().description('默认使用的目标 Bot ID。多 QQ 机器人实例时建议填写。'),
+  commandAuthority: Schema.number().default(3).description('绑定命令所需权限等级。'),
+  maxPushCommits: Schema.number().min(1).max(10).default(3).description('Push 消息中最多展示多少条提交。'),
+  bindings: Schema.array(Schema.object({
+    repo: Schema.string().pattern(/^[^/\s]+\/[^/\s]+$/).description('仓库，格式 owner/repo。'),
+    channelId: Schema.string().description('目标 QQ 群号或频道 ID。'),
+    guildId: Schema.string().description('可选 guildId。多数 QQ 群场景可留空。'),
+    platform: Schema.string().description('目标平台，默认沿用上方 defaultPlatform。'),
+    botId: Schema.string().description('目标 Bot ID。'),
+    events: Schema.array(eventSchema).role('table').description('要转发的事件类型。'),
+  })).role('table').default([]).description('静态绑定，会与数据库里的绑定一起生效。'),
+})

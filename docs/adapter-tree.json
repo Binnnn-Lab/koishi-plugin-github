@@ -1,0 +1,287 @@
+{
+  "sha": "03e53d473d7bec2fb081cb02d4178cae32365339",
+  "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/03e53d473d7bec2fb081cb02d4178cae32365339",
+  "tree": [
+    {
+      "path": ".github",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "c116ca27745e64f930b0ccc3727ae870196349c3",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/c116ca27745e64f930b0ccc3727ae870196349c3"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "99fa798b83b26ec48d871ab280c55aab565bb5bd",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/99fa798b83b26ec48d871ab280c55aab565bb5bd"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/bug_report.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2f412fe632fc2e2c0a3779aec931cbbe50633f3e",
+      "size": 2035,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/2f412fe632fc2e2c0a3779aec931cbbe50633f3e"
+    },
+    {
+      "path": ".github/ISSUE_TEMPLATE/feature_request.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d9665f5aaabbe5cbedc6b129d80416c05b9f1e2d",
+      "size": 1858,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/d9665f5aaabbe5cbedc6b129d80416c05b9f1e2d"
+    },
+    {
+      "path": ".github/workflows",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9badae3762fb7de1897e353c3845818004682395",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/9badae3762fb7de1897e353c3845818004682395"
+    },
+    {
+      "path": ".github/workflows/deploy-gh-pages.yml",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9d4504e2c58f3da2799ab1af460460492af021d3",
+      "size": 1601,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/9d4504e2c58f3da2799ab1af460460492af021d3"
+    },
+    {
+      "path": ".gitignore",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4867500ecaa079851881b5bc99596683af382f68",
+      "size": 159,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/4867500ecaa079851881b5bc99596683af382f68"
+    },
+    {
+      "path": ".vscode",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "9e4f3d2bb9bfee108ce6cc558c796bfb16e324c4",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/9e4f3d2bb9bfee108ce6cc558c796bfb16e324c4"
+    },
+    {
+      "path": ".vscode/settings.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6dddca0f267e5a8689b5d33f1cb1d0a07c3531a4",
+      "size": 807,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/6dddca0f267e5a8689b5d33f1cb1d0a07c3531a4"
+    },
+    {
+      "path": "LICENSE",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "52aa8f1a13b5bb3bc7ea7cb4e6ba02679cb4943f",
+      "size": 1080,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/52aa8f1a13b5bb3bc7ea7cb4e6ba02679cb4943f"
+    },
+    {
+      "path": "README.md",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4e310b04556af240a486859fade323014b134aa0",
+      "size": 301,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/4e310b04556af240a486859fade323014b134aa0"
+    },
+    {
+      "path": "package.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f51afab92526a981e7732ffd45a4a169ad3dc70c",
+      "size": 1878,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/f51afab92526a981e7732ffd45a4a169ad3dc70c"
+    },
+    {
+      "path": "src",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "4851b34e585a9a3dcfec864c69b7843e7eb6f922",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/4851b34e585a9a3dcfec864c69b7843e7eb6f922"
+    },
+    {
+      "path": "src/bot",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "0a030ad0e6982cc2ec4da07006e3be82331237e5",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/0a030ad0e6982cc2ec4da07006e3be82331237e5"
+    },
+    {
+      "path": "src/bot/api",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "fa392dfd9bc5ec646b659b821c424d232aeb93d1",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/fa392dfd9bc5ec646b659b821c424d232aeb93d1"
+    },
+    {
+      "path": "src/bot/api/api.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2bb056dbf7fbf808abc7b24eeef1152810c8f795",
+      "size": 6840,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/2bb056dbf7fbf808abc7b24eeef1152810c8f795"
+    },
+    {
+      "path": "src/bot/api/internal.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4b6e043aaad94ffbff5763ee82335b3e8d922872",
+      "size": 16813,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/4b6e043aaad94ffbff5763ee82335b3e8d922872"
+    },
+    {
+      "path": "src/bot/api/messaging.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd43a7d9a9fd085063aac754bb093b94042664c6",
+      "size": 5171,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/fd43a7d9a9fd085063aac754bb093b94042664c6"
+    },
+    {
+      "path": "src/bot/api/reaction.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "3bff7793c44598f1df975814c93b04b852fc78a7",
+      "size": 3328,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/3bff7793c44598f1df975814c93b04b852fc78a7"
+    },
+    {
+      "path": "src/bot/api/unsupported.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "acbf5f3636ed87ccdbf523e69acc2bae1018143c",
+      "size": 5474,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/acbf5f3636ed87ccdbf523e69acc2bae1018143c"
+    },
+    {
+      "path": "src/bot/base.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "6592bbf18ff4cb9270cbe07a68aec72739a7fbb6",
+      "size": 3473,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/6592bbf18ff4cb9270cbe07a68aec72739a7fbb6"
+    },
+    {
+      "path": "src/bot/bot.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9236096998e6743e279cf57a51f887d204a59bb3",
+      "size": 135,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/9236096998e6743e279cf57a51f887d204a59bb3"
+    },
+    {
+      "path": "src/bot/event.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b7ad5d66ca3f01fb14ae225d46c37c459178ac1",
+      "size": 31103,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/7b7ad5d66ca3f01fb14ae225d46c37c459178ac1"
+    },
+    {
+      "path": "src/bot/http.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d45d57de4f0ebeeb058ddffe0590756038f83a8b",
+      "size": 869,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/d45d57de4f0ebeeb058ddffe0590756038f83a8b"
+    },
+    {
+      "path": "src/bot/webhook.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "a1ce3e8df9f652a837dc967e1d48a78887754f58",
+      "size": 948,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/a1ce3e8df9f652a837dc967e1d48a78887754f58"
+    },
+    {
+      "path": "src/config.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ae14655c7f2b1fd29a7a9000b2e7fbb43e9178a9",
+      "size": 4786,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/ae14655c7f2b1fd29a7a9000b2e7fbb43e9178a9"
+    },
+    {
+      "path": "src/index.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c87b0d70090b8094f6487424782c73b5642f163c",
+      "size": 2792,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/c87b0d70090b8094f6487424782c73b5642f163c"
+    },
+    {
+      "path": "src/message",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "cad85b4459862d26751e8f0dba824746fa0f531d",
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/trees/cad85b4459862d26751e8f0dba824746fa0f531d"
+    },
+    {
+      "path": "src/message/encoder.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e58a5e90731926fef5a4132b700a2b2544052732",
+      "size": 7012,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/e58a5e90731926fef5a4132b700a2b2544052732"
+    },
+    {
+      "path": "src/message/markdown.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2b03cab13d78684fc3e3fc38a41c62faf1a3fc46",
+      "size": 4595,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/2b03cab13d78684fc3e3fc38a41c62faf1a3fc46"
+    },
+    {
+      "path": "src/message/message.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ee71eb16b5c8a1bf04d5e5964e864edc1d7dfc75",
+      "size": 6147,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/ee71eb16b5c8a1bf04d5e5964e864edc1d7dfc75"
+    },
+    {
+      "path": "src/message/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "1be897ded0ced8a92002ceb919c08c5196484d8a",
+      "size": 1408,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/1be897ded0ced8a92002ceb919c08c5196484d8a"
+    },
+    {
+      "path": "src/utils.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58741d226a7f9e718b9cf0e5d962201ecce37a17",
+      "size": 3050,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/58741d226a7f9e718b9cf0e5d962201ecce37a17"
+    },
+    {
+      "path": "src/webhook-router.ts",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f3aa602b86d4cc956c475590ba841bece510d9ad",
+      "size": 2641,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/f3aa602b86d4cc956c475590ba841bece510d9ad"
+    },
+    {
+      "path": "tsconfig.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5af41f7319aa629bcec9beca5dc40c6b55dc249e",
+      "size": 478,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/5af41f7319aa629bcec9beca5dc40c6b55dc249e"
+    },
+    {
+      "path": "tsconfig.tsbuildinfo",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "dadb2ddf7cee9b4193c027cad892918c0aea59aa",
+      "size": 63843,
+      "url": "https://api.github.com/repos/koishi-shangxue-plugins/koishi-plugin-adapter-github/git/blobs/dadb2ddf7cee9b4193c027cad892918c0aea59aa"
+    }
+  ],
+  "truncated": false
+}
