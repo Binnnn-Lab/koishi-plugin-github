@@ -1,57 +1,175 @@
 # koishi-plugin-github-qq-relay
 
-把 `koishi-plugin-adapter-github` 接收到的 GitHub 事件，转发到指定 QQ 群。
+把 `koishi-plugin-adapter-github` 已派发的 GitHub 事件转发到指定 QQ 群。
 
-当前版本严格基于 `adapter-github` 已公开文档和源码里实际派发的事件来实现，重点支持：
+这不是一个自己接收 GitHub Webhook 的插件。它依赖 `adapter-github` 先完成：
+
+1. 接收 GitHub Webhook
+2. 校验 Secret
+3. 解析事件
+4. 派发 `ctx.on('github/...')`
+
+本插件只负责：
+
+1. 监听 `adapter-github` 派发的事件
+2. 查询数据库中的 `owner/repo -> QQ 群` 绑定
+3. 通过 QQ Bot 转发到目标群
+
+## 功能
+
+当前支持的转发事件：
+
+- `star`
+- `push`
+- `issue_opened`
+- `discussion_created`
+- `discussion_comment`
+
+对应 `adapter-github` 事件来源：
 
 - `github/star`
 - `github/push`
+- `github/issue-opened`
+- `github/discussion-created`
+- `github/discussion-comment`
 
-数据库路由模型是：
+## 工作链路
 
-1. GitHub Adapter 收到 Webhook。
-2. Adapter 派发 `ctx.on('github/star')` 或 `ctx.on('github/push')`。
-3. 本插件查询 Koishi 数据库表 `github_relay_bindings`。
-4. 找到 `owner/repo -> QQ 群` 的绑定。
-5. 通过目标 QQ Bot 调用 `bot.sendMessage()` 转发到群里。
+完整链路如下：
 
-## 1. 本地开发与打包
+1. GitHub 向 `http://你的公网地址:端口/github/webhook` 发送 Webhook。
+2. `koishi-plugin-adapter-github` 收到并验证请求。
+3. `adapter-github` 派发 `github/star`、`github/push` 等事件。
+4. 本插件监听这些事件。
+5. 本插件查询表 `github_relay_bindings`。
+6. 找到 `owner/repo -> QQ 群` 的绑定。
+7. 通过 OneBot/NapCat 对应的 QQ Bot 执行 `bot.sendMessage()`。
 
-在当前插件目录执行：
+## 依赖
 
-```bash
-pnpm install
-pnpm build
-```
-
-如果你要把它作为本地插件装进 Koishi 主项目，推荐直接在 Koishi 项目里执行：
-
-```bash
-pnpm add /Volumes/Important/E_backup/Creation/koishi-plugin
-```
-
-也可以先打包：
-
-```bash
-pnpm pack
-```
-
-然后在 Koishi 项目中安装生成的 `.tgz`。
-
-## 2. Koishi 侧依赖关系
-
-你至少需要这些插件同时工作：
+至少需要这些 Koishi 插件：
 
 - GitHub 侧：`koishi-plugin-adapter-github`
 - QQ 侧：NapCat 对应的 Koishi 适配器，常见是 OneBot
-- 数据库：任意 Koishi database 插件
+- 数据库：任意 `database` 插件
 - 本插件：`koishi-plugin-github-qq-relay`
 
-本插件会强依赖 database 服务，因为仓库到群号的绑定保存在数据库里。
+本插件只要求 `database` 服务，但想真正发到 QQ 群，还必须有至少一个非 `github` 平台的可用 Bot。
 
-## 3. GitHub Adapter 推荐配置
+## 配置项
 
-Webhook 模式推荐配置如下：
+当前配置项如下：
+
+```yaml
+plugins:
+  github-qq-relay:
+    defaultPlatform: onebot
+    defaultBotId: "1234567890"
+    defaultEvents:
+      - push
+      - issue_opened
+      - discussion_created
+      - discussion_comment
+    debug: false
+    concurrency: 5
+    commandAuthority: 3
+    maxPushCommits: 3
+    bindings:
+      - repo: owner/repo
+        channelId: "12345678"
+        guildId: ""
+        platform: onebot
+        botId: "1234567890"
+        events:
+          - push
+          - discussion_created
+```
+
+配置说明：
+
+- `defaultPlatform`
+  默认转发平台。单 QQ Bot 场景通常可留空；多平台场景建议填 `onebot`。
+- `defaultBotId`
+  默认目标 Bot ID。单 QQ Bot 场景通常可留空；多机器人场景建议填写。
+- `defaultEvents`
+  命令绑定和静态绑定未显式指定 `events` 时使用的默认事件列表。
+- `debug`
+  开启后输出更详细的匹配和转发日志。
+- `concurrency`
+  并发转发数。
+- `commandAuthority`
+  执行绑定命令需要的 Koishi 权限等级。
+- `maxPushCommits`
+  `push` 消息中最多展示多少条提交。
+- `bindings`
+  静态绑定表。数据库绑定和静态绑定会合并生效。
+
+## 推荐的最简配置
+
+如果你只有一个 NapCat / OneBot QQ Bot，通常可以这样：
+
+```yaml
+plugins:
+  github-qq-relay:
+    defaultEvents:
+      - push
+      - issue_opened
+      - discussion_created
+      - discussion_comment
+    debug: false
+    concurrency: 5
+    commandAuthority: 3
+    maxPushCommits: 3
+    bindings: []
+```
+
+然后直接在目标 QQ 群中执行绑定命令，不必手填 `platform` 和 `botId`。
+
+## 绑定命令
+
+建议直接在目标 QQ 群里执行。
+
+绑定当前群：
+
+```text
+github-relay.bind owner/repo
+```
+
+绑定指定群并指定事件：
+
+```text
+github-relay.bind owner/repo 12345678 -e push,issue_opened,discussion_created,discussion_comment
+```
+
+多 Bot / 多平台场景：
+
+```text
+github-relay.bind owner/repo 12345678 -p onebot -b 1234567890 -e push,star
+```
+
+查看绑定：
+
+```text
+github-relay.list
+github-relay.list owner/repo
+```
+
+解绑：
+
+```text
+github-relay.unbind owner/repo
+github-relay.unbind owner/repo 12345678
+```
+
+说明：
+
+- `bind` 如果在群内执行，会自动继承当前会话的 `platform/channelId/guildId`
+- 如果不是在目标群里执行，建议显式传 `channelId`
+- `events` 留空时使用 `defaultEvents`
+
+## GitHub Adapter 推荐配置
+
+推荐 Webhook 模式：
 
 ```yaml
 plugins:
@@ -65,138 +183,225 @@ plugins:
 
 关键点：
 
-- 文档和源码都确认默认 webhook 路径是 `/github/webhook`
-- Webhook 模式才能完整稳定支持 `star`
-- `push` 事件在源码里明确派发为 `github/push`
+- 默认 Webhook 路径是 `/github/webhook`
+- `star` 事件在 Webhook 模式下支持最好
+- `discussion` 事件只在 Webhook 模式下支持
+- `push` 事件在 `adapter-github` 源码中已明确派发为 `github/push`
 
-## 4. 本插件配置
+## 从源码编译
+
+在插件源码目录执行：
+
+```bash
+cd /app/koishi-plugin
+pnpm install
+pnpm build
+```
+
+编译产物会输出到 `lib/`。
+
+如果 `pnpm` 不存在：
+
+```bash
+npm install -g pnpm
+```
+
+## 安装到 Koishi 主项目
+
+如果你的 Koishi 主项目使用 Yarn 2/3/4，推荐这样安装本地插件：
+
+```bash
+cd /app/my-bot
+yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
+```
+
+注意：
+
+- 这里必须写完整包名：`koishi-plugin-github-qq-relay`
+- 不能只写 `file:/app/koishi-plugin`
+
+如果你的主项目用的是 pnpm，则可用：
+
+```bash
+cd /app/my-bot
+pnpm add /app/koishi-plugin
+```
+
+但如果主项目已经明确配置为 Yarn，请继续用 Yarn，不要混用。
+
+## Koishi 服务器完整部署流程
+
+以下假设：
+
+- 插件源码目录：`/app/koishi-plugin`
+- Koishi 主项目目录：`/app/my-bot`
+- Koishi HTTP 对外端口：`3000`
+- QQ 适配器已能正常给群发消息
+
+### 1. 把插件源码传到服务器
+
+可选方式：
+
+- `git clone`
+- `git pull`
+- `scp -r`
+
+推荐保持服务器上的插件目录本身就是一个 git 仓库，后续更新最省事。
+
+### 2. 编译插件
+
+```bash
+cd /app/koishi-plugin
+pnpm install
+pnpm build
+```
+
+### 3. 安装到 Koishi 主项目
+
+```bash
+cd /app/my-bot
+yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
+```
+
+### 4. 修改 `koishi.yml`
 
 示例：
 
 ```yaml
 plugins:
+  database-sqlite:
+    path: data/koishi.db
+
+  adapter-onebot:
+    # 你的 NapCat / OneBot 配置
+
+  adapter-github:
+    token: "ghp_xxx"
+    mode: webhook
+    webhookPath: /github/webhook
+    webhookSecret: "your-webhook-secret"
+    silentMode: false
+
   github-qq-relay:
-    defaultPlatform: onebot
-    defaultBotId: "1234567890"
+    defaultEvents:
+      - push
+      - issue_opened
+      - discussion_created
+      - discussion_comment
+    debug: false
+    concurrency: 5
     commandAuthority: 3
     maxPushCommits: 3
-    bindings:
-      - repo: yourname/yourrepo
-        channelId: "12345678"
-        platform: onebot
-        botId: "1234567890"
-        events:
-          - star
-          - push
+    bindings: []
 ```
 
-说明：
+### 5. 重启 Koishi
 
-- `defaultPlatform`
-  NapCat 常见场景填 `onebot`
-- `defaultBotId`
-  如果你只挂了一个 QQ Bot，也建议填上，避免多实例时转错
-- `bindings`
-  这是静态绑定；同时你也可以用命令写入数据库绑定
+前台启动：
 
-## 5. 数据库绑定命令
+```bash
+cd /app/my-bot
+yarn start
+```
 
-建议直接在目标 QQ 群里执行，省得再手填群号。
-
-绑定当前群：
+停止前台：
 
 ```text
-github-relay.bind yourname/yourrepo
+Ctrl+C
 ```
 
-绑定指定群并限制事件：
+如果你用 `pm2`：
 
-```text
-github-relay.bind yourname/yourrepo 12345678 -e star,push -p onebot -b 1234567890
+```bash
+pm2 list
+pm2 restart <name>
+pm2 stop <name>
+pm2 start <name>
 ```
 
-查看绑定：
+如果你用 `systemd`：
 
-```text
-github-relay.list
-github-relay.list yourname/yourrepo
+```bash
+systemctl status koishi
+systemctl restart koishi
+systemctl stop koishi
+systemctl start koishi
 ```
 
-解绑：
+## GitHub Webhook 配置
 
-```text
-github-relay.unbind yourname/yourrepo
-github-relay.unbind yourname/yourrepo 12345678
-```
-
-## 6. 本地上传与部署流程
-
-### 第一步：启动 QQ 端
-
-1. 启动 NapCat。
-2. 确认 NapCat 的 OneBot WebSocket 服务正常。
-3. 确认 Koishi 已经可以通过该适配器向群发消息。
-
-这一步要先单独验证，否则 GitHub 事件到了 Koishi 也发不出去。
-
-### 第二步：启动 Koishi
-
-确保 Koishi HTTP 服务对外监听，例如你现在的思路里是 `3000`。
-
-你的 QQ 端 websocket 可以继续跑在 `3001`，这和 GitHub Webhook 的 `3000` 不冲突。
-
-### 第三步：暴露公网入口
-
-把下面地址暴露给 GitHub：
-
-```text
-http://你的公网IP:3000/github/webhook
-```
-
-如果本机没有公网 IP，可以用 FRP、cloudflared、ngrok 之类把 `3000` 暴露出去。
-
-### 第四步：GitHub Webhook 配置
-
-在目标仓库的：
+进入目标仓库：
 
 `Settings -> Webhooks -> Add webhook`
 
 填写：
 
-- Payload URL: `http://你的公网IP:3000/github/webhook`
+- Payload URL: `http://你的公网地址:3000/github/webhook`
 - Content type: `application/json`
 - Secret: 与 `webhookSecret` 一致
 
-勾选事件：
+建议至少勾选：
 
-- `Watch`，用于 Star
-- `Pushes`，用于 Push
+- `Watch`
+- `Pushes`
+- `Issues`
+- `Discussions`
 
-如果你选 `Send me everything` 也可以，但最小化配置更稳。
+如果希望少折腾，也可以直接选：
 
-### 第五步：创建绑定
+- `Send me everything`
 
-在目标 QQ 群里执行：
+## 首次联调
+
+推荐按这个顺序验：
+
+1. 先确认 Koishi 可以正常给目标 QQ 群发消息
+2. 在目标 QQ 群执行：
 
 ```text
-github-relay.bind yourname/yourrepo
+github-relay.bind owner/repo
 ```
 
-或者直接在插件配置里写死 `bindings`。
+3. 查看绑定：
 
-### 第六步：联调验证
+```text
+github-relay.list owner/repo
+```
 
-按你的工作流，应该这样验证：
+4. 在 GitHub 仓库中分别触发：
+- Star
+- Push
+- 创建 Issue 并指派 assignee
+- 创建 Discussion
+- 评论 Discussion
 
-1. 在 GitHub 仓库点一次 Star。
-2. 看 Koishi 是否收到 webhook。
-3. 看本插件是否命中数据库绑定。
-4. 看 QQ 群是否收到 Star 通知。
-5. 再 push 一次提交，确认 `github/push` 路由也通。
+5. 检查群消息是否按预期到达
 
-## 7. 当前消息格式
+## 更新流程
 
-Star：
+如果以后你通过 Git 更新插件源码，服务器上的标准更新流程是：
+
+```bash
+cd /app/koishi-plugin
+git pull
+pnpm install
+pnpm build
+
+cd /app/my-bot
+yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
+```
+
+然后重启 Koishi。
+
+注意：
+
+- 只 `git pull` 不够
+- 必须重新 `pnpm build`
+- 对于 `file:` 本地依赖，通常还需要重新执行一次 `yarn add ...@file:/...`
+
+## 当前消息格式
+
+### Star
 
 ```text
 [GitHub Star] octocat 点亮了 Star
@@ -204,7 +409,7 @@ Star：
 链接：https://github.com/owner/repo
 ```
 
-Push：
+### Push
 
 ```text
 [GitHub Push] octocat 推送了 2 个提交
@@ -216,13 +421,53 @@ Push：
 对比：https://github.com/owner/repo/compare/...
 ```
 
-## 8. 与 adapter-github 对齐的接口依据
+### Issue Opened
 
-这个插件直接依据以下接口实现：
+```text
+[GitHub Issue] octocat 创建了 Issue #12
+仓库：owner/repo
+标题：bug report
+指派给：alice, bob
+内容：
+...
+链接：https://github.com/owner/repo/issues/12
+```
 
-- 事件：`github/star`
-- 事件：`github/push`
-- GitHub Webhook 默认路径：`/github/webhook`
-- 发送消息：Koishi 标准 `bot.sendMessage(channelId, content, guildId?)`
+### Discussion Created
 
-其中 `github/push` 虽然你给的事件文档页没有单列，但适配器源码里已经明确派发。
+```text
+[GitHub Discussion] octocat 创建了 Discussion #5
+仓库：owner/repo
+标题：proposal
+分类：Ideas
+内容：
+...
+链接：https://github.com/owner/repo/discussions/5
+```
+
+### Discussion Comment
+
+```text
+[GitHub Discussion Comment] octocat 评论了 Discussion #5
+仓库：owner/repo
+标题：proposal
+内容：
+...
+链接：https://github.com/owner/repo/discussions/5#discussioncomment-xxx
+```
+
+## 已知边界
+
+- 本插件不自己接收 GitHub Webhook，必须和 `adapter-github` 配合使用
+- `discussion` 事件依赖 `adapter-github` 的 Webhook 模式
+- 如果有多个非 GitHub 平台 Bot 且未指定 `platform/botId`，自动选 Bot 可能会不明确
+- “每天推送 project 日报” 目前未实现，需要单独接 GitHub Projects API 与定时任务
+
+## 依据
+
+实现依据：
+
+- [adapter-github 事件系统](https://koishi-shangxue-plugins.github.io/koishi-plugin-adapter-github/markdown/dev/events.html)
+- [adapter-github 消息处理](https://koishi-shangxue-plugins.github.io/koishi-plugin-adapter-github/markdown/dev/message.html)
+- [adapter-github API](https://koishi-shangxue-plugins.github.io/koishi-plugin-adapter-github/markdown/dev/apis.html)
+- [adapter-github 源码事件派发](https://github.com/koishi-shangxue-plugins/koishi-plugin-adapter-github/blob/main/src/bot/event.ts)
