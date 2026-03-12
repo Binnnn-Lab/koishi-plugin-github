@@ -108,53 +108,6 @@ pm2 delete koishi
 
 - `Send me everything`
 
-## 首次联调
-
-推荐按这个顺序验：
-
-1. 先确认 Koishi 可以正常给目标 QQ 群发消息
-2. 在目标 QQ 群执行：
-
-```text
-github-relay.bind owner/repo
-```
-
-3. 查看绑定：
-
-```text
-github-relay.list owner/repo
-```
-
-4. 在 GitHub 仓库中分别触发：
-- Star
-- Push
-- 创建 Issue 并指派 assignee
-- 创建 Discussion
-- 评论 Discussion
-
-5. 检查群消息是否按预期到达
-
-## 更新流程
-
-如果以后你通过 Git 更新插件源码，服务器上的标准更新流程是：
-
-```bash
-cd /app/koishi-plugin
-git pull
-pnpm install
-pnpm build
-
-cd /app/my-bot
-yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
-```
-
-然后重启 Koishi。
-
-注意：
-
-- 只 `git pull` 不够
-- 必须重新 `pnpm build`
-- 对于 `file:` 本地依赖，通常还需要重新执行一次 `yarn add ...@file:/...`
 
 
 ## 功能
@@ -246,26 +199,6 @@ plugins:
 - `bindings`
   静态绑定表。数据库绑定和静态绑定会合并生效。
 
-## 推荐的最简配置
-
-如果你只有一个 NapCat / OneBot QQ Bot，通常可以这样：
-
-```yaml
-plugins:
-  github-qq-relay:
-    defaultEvents:
-      - push
-      - issue_opened
-      - discussion_created
-      - discussion_comment
-    debug: false
-    concurrency: 5
-    commandAuthority: 3
-    maxPushCommits: 3
-    bindings: []
-```
-
-然后直接在目标 QQ 群中执行绑定命令，不必手填 `platform` 和 `botId`。
 
 ## 绑定命令
 
