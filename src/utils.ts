@@ -20,8 +20,8 @@ export function normalizeEvents(events?: RelayEventName[], fallback: RelayEventN
   return Array.from(new Set(events))
 }
 
-export function makeBindingKey(repo: string, platform: string, channelId: string, guildId?: string, botId?: string) {
-  return [repo, platform, channelId, guildId || '', botId || ''].join('::')
+export function makeBindingKey(repo: string, platform?: string, channelId?: string, guildId?: string, botId?: string) {
+  return [repo, platform || '', channelId || '', guildId || '', botId || ''].join('::')
 }
 
 export function inferPlatform(session?: Session) {

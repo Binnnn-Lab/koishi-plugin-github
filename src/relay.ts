@@ -35,7 +35,7 @@ async function relayEvent(
   const results = await runWithConcurrency(matched, config.concurrency, async (binding) => {
     const bot = resolveTargetBot(ctx, binding, config)
     if (!bot) {
-      throw new Error(`未找到 ${binding.platform} 平台的目标 Bot`)
+      throw new Error(`未找到可用的目标 Bot${binding.platform ? `（platform=${binding.platform}）` : ''}`)
     }
 
     if (binding.guildId) {
@@ -54,13 +54,13 @@ async function relayEvent(
         'failed to relay %s (%s) to %s:%s: %s',
         event.repoKey,
         eventName,
-        binding.platform,
+        binding.platform || 'auto',
         binding.channelId,
         formatError(result.reason),
       )
     } else if (config.debug) {
       const binding = matched[index]
-      logger.info('relayed %s (%s) to %s:%s', event.repoKey, eventName, binding.platform, binding.channelId)
+      logger.info('relayed %s (%s) to %s:%s', event.repoKey, eventName, binding.platform || 'auto', binding.channelId)
     }
   })
 }
@@ -68,6 +68,7 @@ async function relayEvent(
 function resolveTargetBot(ctx: Context, binding: NormalizedBinding, config: Config): Bot | null {
   const targetBotId = binding.botId || config.defaultBotId
   const candidates = ctx.bots.filter((bot) => {
+    if (!bot.platform) return false
     if (bot.platform === 'github') return false
     if (binding.platform) return bot.platform === binding.platform
     if (config.defaultPlatform) return bot.platform === config.defaultPlatform
@@ -84,9 +85,11 @@ function resolveTargetBot(ctx: Context, binding: NormalizedBinding, config: Conf
 
   const platformGroups = new Map<string, Bot[]>()
   for (const bot of candidates) {
-    const list = platformGroups.get(bot.platform) || []
+    const platform = bot.platform
+    if (!platform) continue
+    const list = platformGroups.get(platform) || []
     list.push(bot)
-    platformGroups.set(bot.platform, list)
+    platformGroups.set(platform, list)
   }
 
   if (platformGroups.size === 1) return candidates[0]
