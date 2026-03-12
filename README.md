@@ -251,7 +251,7 @@ pnpm add /app/koishi-plugin
 ### 2. 编译插件
 
 ```bash
-cd /app/koishi-plugin
+cd /app/koishi-plugin-github
 pnpm install
 pnpm build
 ```
@@ -260,7 +260,7 @@ pnpm build
 
 ```bash
 cd /app/my-bot
-yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
+yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin-github
 ```
 
 ### 4. 修改 `koishi.yml`
@@ -269,18 +269,6 @@ yarn add koishi-plugin-github-qq-relay@file:/app/koishi-plugin
 
 ```yaml
 plugins:
-  database-sqlite:
-    path: data/koishi.db
-
-  adapter-onebot:
-    # 你的 NapCat / OneBot 配置
-
-  adapter-github:
-    token: "ghp_xxx"
-    mode: webhook
-    webhookPath: /github/webhook
-    webhookSecret: "your-webhook-secret"
-    silentMode: false
 
   github-qq-relay:
     defaultEvents:
@@ -292,41 +280,22 @@ plugins:
     concurrency: 5
     commandAuthority: 3
     maxPushCommits: 3
-    bindings: []
 ```
 
 ### 5. 重启 Koishi
 
-前台启动：
-
 ```bash
+npm install -g pm2
+
 cd /app/my-bot
-yarn start
-```
 
-停止前台：
-
-```text
-Ctrl+C
-```
-
-如果你用 `pm2`：
-
-```bash
 pm2 list
-pm2 restart <name>
-pm2 stop <name>
-pm2 start <name>
+pm2 logs koishi
+pm2 restart koishi
+pm2 stop koishi
+pm2 delete koishi
 ```
 
-如果你用 `systemd`：
-
-```bash
-systemctl status koishi
-systemctl restart koishi
-systemctl stop koishi
-systemctl start koishi
-```
 
 ## GitHub Webhook 配置
 
