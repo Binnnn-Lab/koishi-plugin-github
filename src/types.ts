@@ -1,4 +1,4 @@
-export const relayEvents = ['star', 'push'] as const
+export const relayEvents = ['star', 'push', 'issue_opened', 'discussion_created', 'discussion_comment'] as const
 
 export type RelayEventName = typeof relayEvents[number]
 
@@ -72,6 +72,38 @@ export interface GitHubPushEvent extends GitHubBaseEvent {
   after?: string
   commits?: GitHubPushCommit[]
   headCommit?: GitHubPushCommit
+}
+
+export interface GitHubIssueAssignee {
+  login?: string
+}
+
+export interface GitHubIssueEvent extends GitHubBaseEvent {
+  issue: {
+    number?: number
+    title?: string
+    body?: string
+    html_url?: string
+    assignees?: GitHubIssueAssignee[]
+  }
+}
+
+export interface GitHubDiscussionComment {
+  body?: string
+  html_url?: string
+}
+
+export interface GitHubDiscussionEvent extends GitHubBaseEvent {
+  discussion: {
+    number?: number
+    title?: string
+    body?: string
+    html_url?: string
+    category?: {
+      name?: string
+    }
+  }
+  comment?: GitHubDiscussionComment
 }
 
 declare module 'koishi' {

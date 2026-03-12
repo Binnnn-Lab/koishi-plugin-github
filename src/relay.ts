@@ -1,8 +1,8 @@
 import { Bot, Context, Logger } from 'koishi'
 import { Config } from './config'
 import { getMergedBindings } from './database'
-import { buildPushMessage, buildStarMessage } from './message'
-import { GitHubBaseEvent, GitHubPushEvent, GitHubStarEvent, NormalizedBinding, RelayEventName } from './types'
+import { buildDiscussionCommentMessage, buildDiscussionCreatedMessage, buildIssueOpenedMessage, buildPushMessage, buildStarMessage } from './message'
+import { GitHubBaseEvent, GitHubDiscussionEvent, GitHubIssueEvent, GitHubPushEvent, GitHubStarEvent, NormalizedBinding, RelayEventName } from './types'
 import { formatError } from './utils'
 
 const logger = new Logger('github-qq-relay')
@@ -14,6 +14,18 @@ export function registerRelay(ctx: Context, config: Config) {
 
   ;(ctx.on as any)('github/push', async (event: GitHubPushEvent) => {
     await relayEvent(ctx, config, 'push', event, buildPushMessage(event, config))
+  })
+
+  ;(ctx.on as any)('github/issue-opened', async (event: GitHubIssueEvent) => {
+    await relayEvent(ctx, config, 'issue_opened', event, buildIssueOpenedMessage(event))
+  })
+
+  ;(ctx.on as any)('github/discussion-created', async (event: GitHubDiscussionEvent) => {
+    await relayEvent(ctx, config, 'discussion_created', event, buildDiscussionCreatedMessage(event))
+  })
+
+  ;(ctx.on as any)('github/discussion-comment', async (event: GitHubDiscussionEvent) => {
+    await relayEvent(ctx, config, 'discussion_comment', event, buildDiscussionCommentMessage(event))
   })
 }
 
