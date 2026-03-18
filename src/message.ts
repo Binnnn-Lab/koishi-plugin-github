@@ -49,7 +49,8 @@ export function buildIssueOpenedMessage(event: GitHubIssueEvent) {
   const assignees = (event.issue.assignees || [])
     .map(item => item.login)
     .filter(Boolean)
-    .join(', ')
+    .map(login => `@${login}`)
+    .join(' ')
 
   const lines = [
     `[GitHub Issue] ${actor} 创建了 Issue #${event.issue.number || '?'}`,
@@ -57,7 +58,7 @@ export function buildIssueOpenedMessage(event: GitHubIssueEvent) {
     `标题：${event.issue.title || '(no title)'}`,
   ]
 
-  if (assignees) lines.push(`指派给：${assignees}`)
+  if (assignees) lines.unshift(assignees)
   if (event.issue.body) lines.push(`内容：\n${truncateText(event.issue.body)}`)
   if (event.issue.html_url) lines.push(`链接：${event.issue.html_url}`)
 
