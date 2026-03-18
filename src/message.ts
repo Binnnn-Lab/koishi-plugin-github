@@ -53,12 +53,13 @@ export function buildIssueOpenedMessage(event: GitHubIssueEvent) {
     .join(' ')
 
   const lines = [
+    '@全体成员',
     `[GitHub Issue] ${actor} 创建了 Issue #${event.issue.number || '?'}`,
     `仓库：${event.repoKey}`,
     `标题：${event.issue.title || '(no title)'}`,
   ]
 
-  if (assignees) lines.unshift(assignees)
+  if (assignees) lines.splice(1, 0, assignees)
   if (event.issue.body) lines.push(`内容：\n${truncateText(event.issue.body)}`)
   if (event.issue.html_url) lines.push(`链接：${event.issue.html_url}`)
 
