@@ -104,15 +104,11 @@ export function buildDiscussionCreatedMessage(event: GitHubDiscussionEvent) {
 }
 
 export function buildDiscussionCommentMessage(event: GitHubDiscussionEvent) {
-  const actor = event.actor?.login || event.actor?.name || 'unknown'
   const lines = [
-    `[GitHub Discussion Comment] ${actor} 评论了 Discussion #${event.discussion.number || '?'}`,
-    `仓库：${event.repoKey}`,
     `标题：${event.discussion.title || '(no title)'}`,
   ]
 
   if (event.comment?.body) lines.push(`内容：\n${truncateText(event.comment.body)}`)
-  if (event.comment?.html_url || event.discussion.html_url) lines.push(`链接：${event.comment?.html_url || event.discussion.html_url}`)
 
   return lines.join('\n')
 }
